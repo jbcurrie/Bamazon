@@ -3,6 +3,19 @@ An inventory app in node.js and mySql.
 
 ## [Video Review](https://youtu.be/qEOb88sy_oA)
 
+### To get started:
+1. Clone the repository and install the dependencies using the code below:
+
+    git clone https://github.com/jbcurrie/Bamazon.git
+    cd Bamazon
+    npm install
+    
+2. Load the `schema.sql` file into mySQL to create the database. Import the *product.csv* and *department.csv* files into mySQL to populate the database with products.
+
+3. run `node bamazonCustomer.js` in your bash terminal to open the app.
+  
+* **required technologies:** *node.js*, *mySql*
+
 ## Customer View
 * `View Store` Customers are prompted to input the ID and quantity of the item they would like to purchase.
 * Bamazon checks if the store has enough of the product to meet the customer's request.
