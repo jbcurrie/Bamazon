@@ -1,11 +1,7 @@
-//require inquirer prompt
-//require msql
-//initiate database
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var consoleTab = require('console.table');
 var customer = require("./bamazonCustomer.js")
-// var idList = [];
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -17,7 +13,6 @@ var connection = mysql.createConnection({
 
 connection.connect(function(err) {
   if (err) throw err;
-  // run the start function after the connection is made to prompt the user
 //   console.log("connected as id: " + connection.threadId);
 });
 
@@ -33,22 +28,22 @@ module.exports.managerView = function() {
         switch (result.options) {
             case "View Products for Sale":
             viewProducts();
-            //  the app should list every available item: the item IDs, names, prices, and quantities.
+            //  lists manager view of items
             break;
             
             case "View Low Inventory":
             lowInventory();
-            //  then it should list all items with an inventory count lower than five.
+            //  lists all items with an inventory count lower than five.
             break;
 
             case "Add to Inventory":
             addInventory();
-            // your app should display a prompt that will let the manager "add more" of any item currently in the store.
+            // prompt to let the manager "add more" of any item currently in the store.
             break;
 
             case "Add New Product":
             addProduct();
-            // it should allow the manager to add a completely new product to the store.
+            // allows the manager to add a completely new product to the store.
             break;
 
             case "Main Menu":
