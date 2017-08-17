@@ -54,7 +54,7 @@ function viewProdSales() {
         if (err) {
             console.log(err);
         }
-        // console.log(res);
+        console.log("\n" + "*****Bamazon Total Product Sales and Profit by Department*****" + "\n");
         console.table(res)
         setTimeout(function() {
         module.exports.SupervisorView();

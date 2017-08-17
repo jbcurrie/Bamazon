@@ -55,6 +55,7 @@ module.exports.managerView = function() {
 
 function viewProducts() {
     var query = connection.query("SELECT * FROM products",function(err, results) {
+        console.log("\n" + "*****Bamazon Inventory*****" + "\n");
         console.table(results);
         setTimeout(function() {
             module.exports.managerView()
