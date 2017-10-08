@@ -1,53 +1,12 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var consoleTab = require('console.table');
-var manager = require("./bamazonManager.js");
-var supervisor = require("./bamazonSupervisor.js");
 var idList = [];
+var db = require('./db');
+var cli = require('./cli.js');
 
-
-var connection = mysql.createConnection({
-    host: "localhost",
-    port:3306, 
-    user:"root",
-    password:"password",
-    database: "bamazonDB"
-})
-
-connection.connect(function(err) {
-  if (err) throw err;
-    //console.log("connected as id: " + connection.threadId);
-    module.exports.mainTree();
-});
-
-//after initiated 'view store' then run options, what would you like to buy, and how many units
-module.exports.mainTree = function() {
-    inquirer.prompt([
-        {
-            type:"list",
-            name:"option",
-            message:"Welcome to Bamazon!" + "\n" + "What would you like to do?",
-            choices:[new inquirer.Separator(),"View Store","Manage Inventory","Supervisor View"]
-        }
-    ]).then(function(result){
-        switch (result.option) {
-            case "View Store":
-                viewStore();
-                break;
-
-            case "Manage Inventory":
-                manager.managerView();
-                break;
-
-            case "Supervisor View":
-                supervisor.SupervisorView();
-                break;
-        }
-    })
-}
-
-function viewStore() {
-    var query = connection.query(
+module.exports.viewStore = function () {
+    var query = db.query(
     "SELECT item_id,product_name,style_color,price FROM products",
     function(err, res) {
         console.log("\n" + "*****Bamazon Store*****" + "\n")
@@ -62,8 +21,7 @@ function viewStore() {
 
 
 function buyItems(idList) {
-    setTimeout(function () { 
-        debugger;
+    // setTimeout(function () { 
         inquirer.prompt([
             {
                 type:"input",
@@ -85,7 +43,7 @@ function buyItems(idList) {
             }
 
             if (truthy === true) {
-                var query = connection.query("SELECT item_id,product_name,stock_quantity,price FROM products WHERE ?",
+                var query = db.query("SELECT item_id,product_name,stock_quantity,price FROM products WHERE ?",
                     {
                         item_id:choice.item
                     },
@@ -112,13 +70,13 @@ function buyItems(idList) {
                 buyItems(idList);
             }
         })
-    },2000);
+    // },2000);
 }
 
 function productSales(id,quant,price) {
     // the price of the product multiplied by the quantity purchased is added to the product's product_sales column.
     
-    var query = connection.query(`UPDATE products SET product_sales=IFNULL(product_sales,0) + ?*? WHERE item_id=?`,
+    var query = db.query(`UPDATE products SET product_sales=IFNULL(product_sales,0) + ?*? WHERE item_id=?`,
         [
             quant,
             price,
@@ -135,7 +93,7 @@ function productSales(id,quant,price) {
 function stockUpdate(stock,id,quant,item,price) {
     // Once the customer has placed the order, 
     // application checks if store has enough of the product to meet the customer's request.
-    var query = connection.query("UPDATE products SET stock_quantity=? WHERE item_id=?",
+    var query = db.query("UPDATE products SET stock_quantity=? WHERE item_id=?",
         [
             stock,
             id
@@ -148,8 +106,8 @@ function stockUpdate(stock,id,quant,item,price) {
             //update the total price of the order 
             var total = price * quant
             console.log("\n" + `Your total for ${quant} ${item} is $${total.toFixed(2)}.`+ "\n")
-            setTimeout(function() {
-                module.exports.mainTree();
-            },2000);   
+            // setTimeout(function() {
+                cli.mainTree();
+            // },2000);   
         })
 };

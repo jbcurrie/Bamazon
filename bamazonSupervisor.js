@@ -1,21 +1,9 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var consoleTab = require('console.table');
-var customer = require("./bamazonCustomer.js")
+var db = require('./db');
+var cli = require('./cli.js');
 
-var connection = mysql.createConnection({
-    host: "localhost",
-    port:3306, 
-    user:"root",
-    password:"password",
-    database: "bamazonDB"
-})
-
-connection.connect(function(err) {
-  if (err) throw err;
-  // run the start function after the connection is made to prompt the user
-//   console.log("connected as id: " + connection.threadId);
-});
 
 module.exports.SupervisorView = function() {
     inquirer.prompt([
@@ -36,7 +24,7 @@ module.exports.SupervisorView = function() {
             break;
 
             case "Main Menu":
-            customer.mainTree();
+            cli.mainTree();
             break;
         };
     });
@@ -50,15 +38,13 @@ function viewProdSales() {
         query+= " ON products.department_name = departments.department_name";
         query+= " WHERE products.department_name = departments.department_name";
         query+= " GROUP BY department_name";
-    connection.query(query,function(err, res) {
+    db.query(query,function(err, res) {
         if (err) {
             console.log(err);
         }
         console.log("\n" + "*****Bamazon Total Product Sales and Profit by Department*****" + "\n");
         console.table(res)
-        setTimeout(function() {
         module.exports.SupervisorView();
-        },1000);
     })
     
 }
@@ -78,7 +64,7 @@ function newDepartment() {
         }  
     ]).then(function(results){
         var query = `INSERT INTO departments (department_name,over_head_costs) VALUES (?,?)`;
-        connection.query(query,
+        db.query(query,
         [
             results.dept,
             results.overhead
@@ -89,9 +75,7 @@ function newDepartment() {
             }
             // console.log(res);
             console.log(`New Department Added` + "\n" + `Dept:${results.dept} Overhead:${results.overhead}`)
-            setTimeout(function() {
-                module.exports.SupervisorView();
-            },1000);
+            module.exports.SupervisorView();
         })
     })
 }

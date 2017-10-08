@@ -1,20 +1,8 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 var consoleTab = require('console.table');
-var customer = require("./bamazonCustomer.js")
-
-var connection = mysql.createConnection({
-    host: "localhost",
-    port:3306, 
-    user:"root",
-    password:"password",
-    database: "bamazonDB"
-})
-
-connection.connect(function(err) {
-  if (err) throw err;
-//   console.log("connected as id: " + connection.threadId);
-});
+var db = require('./db');
+var cli = require('./cli.js');
 
 module.exports.managerView = function() {
     inquirer.prompt([
@@ -47,32 +35,28 @@ module.exports.managerView = function() {
             break;
 
             case "Main Menu":
-            customer.mainTree();
+            cli.mainTree();
             break;
         }
     })
 }
 
 function viewProducts() {
-    var query = connection.query("SELECT * FROM products",function(err, results) {
+    var query = db.query("SELECT * FROM products",function(err, results) {
         console.log("\n" + "*****Bamazon Inventory*****" + "\n");
         console.table(results);
-        setTimeout(function() {
-            module.exports.managerView()
-        },1000);
+        module.exports.managerView()
     })
 };
 
 function lowInventory() {
     var query = "SELECT item_id,product_name,stock_quantity FROM products WHERE stock_quantity < 5";
-    connection.query(query, function(err, res) {
+    db.query(query, function(err, res) {
         if (err) {
             console.log(err)
         }
         console.table(res);
-        setTimeout(function() {
-            module.exports.managerView()
-        },1000);
+        module.exports.managerView()
     });
 };
 
@@ -91,7 +75,7 @@ function addInventory() {
 
     ]).then(function(result) {
         var query = "UPDATE products SET stock_quantity=stock_quantity+? WHERE item_id=?";
-        connection.query(query,
+        db.query(query,
         [
             result.stock,
             result.item
@@ -103,9 +87,7 @@ function addInventory() {
             // console.log(res);
             console.log(`${result.stock} of this item added to Item_ID=${result.item}.`)
         })
-        setTimeout(function() {
             module.exports.managerView()
-        },1000);
     })
 };
 
@@ -138,7 +120,7 @@ function addProduct() {
         }
     ]).then(function(result){
         var query = "INSERT INTO products (product_name, style_color, department_name, price, stock_quantity) VALUES (?, ?, ?, ?, ?)";
-        connection.query(query,
+        db.query(query,
         [
             result.product,
             result.style,
@@ -152,9 +134,7 @@ function addProduct() {
             }
             // console.log(res);
             console.log(`New Product` + "\n" + `Name:${result.product} Style:${result.style} Dept:${result.dept} Price:${result.price} Quantity:${result.quantity}`)
-            setTimeout(function() {
-                module.exports.managerView()
-            },1000);
+            module.exports.managerView()
         })
     })
 }
