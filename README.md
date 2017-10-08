@@ -3,7 +3,7 @@ An inventory app in node.js and mySql.
 
 ## [Video Review](https://youtu.be/qEOb88sy_oA)
 
-![](https://media.giphy.com/media/3ohhwADU5O83KoDRwA/giphy.gif)
+![](https://media.giphy.com/media/xT9Igys4bK2B1TFRIY/giphy.gif)
 
 ### To get started:
 1. Clone the repository and install the dependencies using the code below:
